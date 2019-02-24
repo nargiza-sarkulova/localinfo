@@ -11,6 +11,7 @@ services:
       - "6379:6379"
   web:
     build: .
+    image: django
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
@@ -19,3 +20,10 @@ services:
     depends_on:
       - db
       - redis
+  migration:
+    image: django
+    command: python manage.py migrate --noinput
+    volumes:
+      - .:/code
+    depends_on:
+      - db
