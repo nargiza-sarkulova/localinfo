@@ -27,10 +27,12 @@ class IPList(APIView):
         self.ip_client = IPstackAPIClient()
         self.weather_client = OpenWeatherAPIClient()
 
-    def save_data_in_cache(self, ip_info):
+    def get_additional_data(self, ip_info):
         weather = self.weather_client.get_weather_info(ip_info['latitude'], ip_info['longitude'])
-        data = {'weather': weather}
-        cache.set(ip_info['number'], data, timeout=CACHE_TTL)
+        return {'weather': weather}
+
+    def save_additional_data(self, ip_number, data):
+        cache.set(ip_number, data, timeout=CACHE_TTL)
 
     def get(self, request):
         ips = IP.objects.all()
@@ -46,8 +48,9 @@ class IPList(APIView):
         serializer = IPSerializer(data=ip_info)
         if serializer.is_valid():
             serializer.save()
-            self.save_data_in_cache(ip_info)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            additional_data = self.get_additional_data(ip_info)
+            self.save_additional_data(ip_number, additional_data)
+            return Response({**serializer.data, **additional_data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
