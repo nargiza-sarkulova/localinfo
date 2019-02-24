@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 
+from django.db.utils import IntegrityError
+from django.test import TestCase
 from django.urls import reverse
 
 from rest_framework import status
@@ -9,7 +11,33 @@ from rest_framework.test import APITestCase
 from ip.models import IP
 
 
-class IPTest(APITestCase):
+class IPTest(TestCase):
+    def test_ip_uniqueness(self):
+        """
+        Test IP number is unique accros table
+        """
+        data = {
+            'number': '174.114.57.161',
+            'country_name': 'Canada',
+            'region_name': 'Ontario',
+            'latitude': '67.4289',
+            'longitude': '-82.6844'
+        }
+        ip1 = IP(**data)
+        ip1.save()
+
+        data = {
+            'number': '174.114.57.161',
+            'country_name': 'Canada',
+            'region_name': 'Ontario',
+            'latitude': '67.4289',
+            'longitude': '-82.6844'
+        }
+        ip2 = IP(**data)
+        self.assertRaises(IntegrityError, ip2.save)
+
+
+class IpAPITest(APITestCase):
 
     def test_create_ip(self):
         """
@@ -21,8 +49,8 @@ class IPTest(APITestCase):
             'country_name': 'Canada',
             'region_name': 'Ontario',
             'city': 'Ottawa',
-            'latitude': 67.4289,
-            'longitude': -82.6844
+            'latitude': '67.4289',
+            'longitude': '-82.6844'
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -33,3 +61,92 @@ class IPTest(APITestCase):
         self.assertEqual(IP.objects.get().city, 'Ottawa')
         self.assertEqual(IP.objects.get().latitude, Decimal('67.4289'))
         self.assertEqual(IP.objects.get().longitude, Decimal('-82.6844'))
+
+    def test_create_ip_malformed(self):
+        """
+        Test malformed create data
+        """
+        url = reverse('ip-list')
+        data = {
+            'number': '174.114.57.161',
+            'country_name': 'Canada',
+            'region_name': 'Ontario',
+            'city': 'Ottawa',
+            'latitude': '55XXX',
+            'longitude': '-82.6844'
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_ip_detail(self):
+        """
+        Test IP detail endpoint
+        """
+        data = {
+            'number': '174.114.57.161',
+            'country_name': 'Canada',
+            'region_name': 'Ontario',
+            'city': 'Ottawa',
+            'latitude': '67.4289',
+            'longitude': '-82.6844'
+        }
+        ip = IP(**data)
+        ip.save()
+        url = reverse('ip-detail', kwargs={'pk': ip.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['number'], '174.114.57.161')
+        self.assertEqual(response.data['country_name'], 'Canada')
+        self.assertEqual(response.data['region_name'], 'Ontario')
+        self.assertEqual(response.data['city'], 'Ottawa')
+        self.assertEqual(response.data['latitude'], '67.4289')
+        self.assertEqual(response.data['longitude'], '-82.6844')
+
+    def test_ip_list(self):
+        """
+        Test IP list endpoint
+        """
+        data = {
+            'number': '174.114.57.161',
+            'country_name': 'Canada',
+            'region_name': 'Ontario',
+            'latitude': '67.4289',
+            'longitude': '-82.6844'
+        }
+        ip1 = IP(**data)
+        ip1.save()
+
+        data = {
+            'number': '174.114.57.162',
+            'country_name': 'Canada',
+            'region_name': 'Ontario',
+            'latitude': '60.7543',
+            'longitude': '-90.6844'
+        }
+        ip2 = IP(**data)
+        ip2.save()
+
+        url = reverse('ip-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+
+    def test_404(self):
+        url = reverse('ip-detail', kwargs={'pk': 333})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_ip_validation(self):
+        """
+        Test IP is valid
+        """
+        url = reverse('ip-list')
+        data = {
+            'number': '300.300.300.300',
+            'country_name': 'Canada',
+            'region_name': 'Ontario',
+            'latitude': '67.4289',
+            'longitude': '-82.6844'
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
