@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'wh9d$f9q&&cj5$l8=(e-#pvb581)dnhpbk(z2udbqmrmry8+-p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 CORS_ORIGIN_ALLOW_ALL = True
@@ -140,4 +140,4 @@ STATIC_URL = '/static/'
 # Local info open APIs
 IPSTACK_API_KEY = ''
 OPEN_WEATHER_API_KEY = ''
-EVENT_REGISTRY_API_KEY = ''
+NEWS_API_KEY = ''

@@ -12,6 +12,7 @@ from ip.models import IP
 from ip.serializers import IPSerializer
 from ip.utils import is_ip_valid
 from clients.ipstack import IPstackAPIClient
+from clients.news import NewsAPIClient
 from clients.open_weather import OpenWeatherAPIClient
 
 
@@ -25,11 +26,13 @@ class IPList(APIView):
     def __init__(self, *args, **kwargs):
         super(IPList, self).__init__(*args, **kwargs)
         self.ip_client = IPstackAPIClient()
+        self.news_client = NewsAPIClient()
         self.weather_client = OpenWeatherAPIClient()
 
     def get_additional_data(self, ip_info):
         weather = self.weather_client.get_weather_info(ip_info['latitude'], ip_info['longitude'])
-        return {'weather': weather}
+        news = self.news_client.get_news(ip_info['country_code'])
+        return {'weather': weather, 'news': news}
 
     def save_additional_data(self, ip_number, data):
         cache.set(ip_number, data, timeout=CACHE_TTL)

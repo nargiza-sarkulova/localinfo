@@ -21,6 +21,7 @@ class IPTest(TestCase):
         data = {
             'number': '174.114.57.161',
             'country_name': 'Canada',
+            'country_code': 'ca',
             'region_name': 'Ontario',
             'latitude': '67.4289',
             'longitude': '-82.6844'
@@ -31,6 +32,7 @@ class IPTest(TestCase):
         data = {
             'number': '174.114.57.161',
             'country_name': 'Canada',
+            'country_code': 'ca',
             'region_name': 'Ontario',
             'latitude': '67.4289',
             'longitude': '-82.6844'
@@ -42,17 +44,20 @@ class IPTest(TestCase):
 def _mock_ip_info(self, ip_number):
     data = {'174.114.57.161': {'number': '174.114.57.161',
                                'country_name': 'Canada',
+                               'country_code': 'ca',
                                'region_name': 'Ontario',
                                'city': 'Ottawa',
                                'latitude': '67.4289',
                                'longitude': '-82.6844'},
             '174.114.57.162': {'number': '174.114.57.162',
                                'country_name': 'Canada',
+                               'country_code': 'ca',
                                'region_name': 'Ontario',
                                'latitude': '60.7543',
                                'longitude': '-90.6844'},
             '174.114.57.163': {'number': '174.114.57.162',
                                'country_name': 'Canada',
+                               'country_code': 'ca',
                                'region_name': 'Ontario',
                                'latitude': 'XXXX33',
                                'longitude': '-90.6844'}}
@@ -73,6 +78,7 @@ class IpAPITest(APITestCase):
         self.assertEqual(IP.objects.count(), 1)
         self.assertEqual(IP.objects.get().number, '174.114.57.161')
         self.assertEqual(IP.objects.get().country_name, 'Canada')
+        self.assertEqual(IP.objects.get().country_code, 'ca')
         self.assertEqual(IP.objects.get().region_name, 'Ontario')
         self.assertEqual(IP.objects.get().city, 'Ottawa')
         self.assertEqual(IP.objects.get().latitude, Decimal('67.4289'))
@@ -94,6 +100,7 @@ class IpAPITest(APITestCase):
         data = {
             'number': '174.114.57.161',
             'country_name': 'Canada',
+            'country_code': 'ca',
             'region_name': 'Ontario',
             'city': 'Ottawa',
             'latitude': '67.4289',
@@ -106,6 +113,7 @@ class IpAPITest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['number'], '174.114.57.161')
         self.assertEqual(response.data['country_name'], 'Canada')
+        self.assertEqual(response.data['country_code'], 'ca')
         self.assertEqual(response.data['region_name'], 'Ontario')
         self.assertEqual(response.data['city'], 'Ottawa')
         self.assertEqual(response.data['latitude'], '67.4289')
@@ -118,6 +126,7 @@ class IpAPITest(APITestCase):
         data = {
             'number': '174.114.57.161',
             'country_name': 'Canada',
+            'country_code': 'ca',
             'region_name': 'Ontario',
             'latitude': '67.4289',
             'longitude': '-82.6844'
@@ -128,6 +137,7 @@ class IpAPITest(APITestCase):
         data = {
             'number': '174.114.57.162',
             'country_name': 'Canada',
+            'country_code': 'ca',
             'region_name': 'Ontario',
             'latitude': '60.7543',
             'longitude': '-90.6844'

@@ -23,6 +23,7 @@ class IPstackAPIClient(BaseClient):
             return {
                 'number': info.get('ip'),
                 'country_name': info.get('country_name'),
+                'country_code': info.get('country_code'),
                 'country_flag': info.get('location', {}).get('country_flag'),
                 'region_name': info.get('region_name'),
                 'city': info.get('city'),

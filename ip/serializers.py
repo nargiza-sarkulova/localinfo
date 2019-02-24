@@ -8,8 +8,8 @@ from ip.utils import is_ip_valid
 class IPSerializer(serializers.ModelSerializer):
     class Meta:
         model = IP
-        fields = ('id', 'number', 'country_name', 'country_flag', 'region_name', 'city',
-                  'latitude', 'longitude')
+        fields = ('id', 'number', 'country_name', 'country_code', 'country_flag', 'region_name',
+                  'city', 'latitude', 'longitude')
 
     def validate_number(self, value):
         """
