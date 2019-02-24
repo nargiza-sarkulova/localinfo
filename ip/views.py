@@ -7,19 +7,30 @@ from rest_framework.views import APIView
 
 from ip.models import IP
 from ip.serializers import IPSerializer
+from ip.utils import is_ip_valid
+from clients.ipstack import IPstackAPIClient
 
 
 class IPList(APIView):
     """
     List all saved IPs.
     """
+    def __init__(self, *args, **kwargs):
+        super(IPList, self).__init__(*args, **kwargs)
+        self.ip_client = IPstackAPIClient()
+
     def get(self, request):
         ips = IP.objects.all()
         serializer = IPSerializer(ips, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = IPSerializer(data=request.data)
+        ip_number = request.data['number']
+        if not is_ip_valid(ip_number):
+            return Response('{"number":["A valid IP number is required."]}',
+                            status=status.HTTP_400_BAD_REQUEST)
+        ip_info = self.ip_client.get_ip_info(ip_number)
+        serializer = IPSerializer(data=ip_info)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+from mock import patch
 
 from django.db.utils import IntegrityError
 from django.test import TestCase
@@ -9,12 +10,13 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from ip.models import IP
+from clients.ipstack import IPstackAPIClient
 
 
 class IPTest(TestCase):
     def test_ip_uniqueness(self):
         """
-        Test IP number is unique accros table
+        Test IP number is unique accross table
         """
         data = {
             'number': '174.114.57.161',
@@ -37,6 +39,27 @@ class IPTest(TestCase):
         self.assertRaises(IntegrityError, ip2.save)
 
 
+def _mock_ip_info(self, ip_number):
+    data = {'174.114.57.161': {'number': '174.114.57.161',
+                               'country_name': 'Canada',
+                               'region_name': 'Ontario',
+                               'city': 'Ottawa',
+                               'latitude': '67.4289',
+                               'longitude': '-82.6844'},
+            '174.114.57.162': {'number': '174.114.57.162',
+                               'country_name': 'Canada',
+                               'region_name': 'Ontario',
+                               'latitude': '60.7543',
+                               'longitude': '-90.6844'},
+            '174.114.57.163': {'number': '174.114.57.162',
+                               'country_name': 'Canada',
+                               'region_name': 'Ontario',
+                               'latitude': 'XXXX33',
+                               'longitude': '-90.6844'}}
+    return data.get(ip_number)
+
+
+@patch.object(IPstackAPIClient, 'get_ip_info', _mock_ip_info)
 class IpAPITest(APITestCase):
 
     def test_create_ip(self):
@@ -44,14 +67,7 @@ class IpAPITest(APITestCase):
         Create new IP
         """
         url = reverse('ip-list')
-        data = {
-            'number': '174.114.57.161',
-            'country_name': 'Canada',
-            'region_name': 'Ontario',
-            'city': 'Ottawa',
-            'latitude': '67.4289',
-            'longitude': '-82.6844'
-        }
+        data = {'number': '174.114.57.161'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(IP.objects.count(), 1)
@@ -67,14 +83,7 @@ class IpAPITest(APITestCase):
         Test malformed create data
         """
         url = reverse('ip-list')
-        data = {
-            'number': '174.114.57.161',
-            'country_name': 'Canada',
-            'region_name': 'Ontario',
-            'city': 'Ottawa',
-            'latitude': '55XXX',
-            'longitude': '-82.6844'
-        }
+        data = {'number': '174.114.57.163'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -141,12 +150,6 @@ class IpAPITest(APITestCase):
         Test IP is valid
         """
         url = reverse('ip-list')
-        data = {
-            'number': '300.300.300.300',
-            'country_name': 'Canada',
-            'region_name': 'Ontario',
-            'latitude': '67.4289',
-            'longitude': '-82.6844'
-        }
+        data = {'number': '300.300.300.300'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

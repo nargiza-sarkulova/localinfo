@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from IPy import IP as ip_validate
-
 from rest_framework import serializers
 
 from ip.models import IP
+from ip.utils import is_ip_valid
 
 
 class IPSerializer(serializers.ModelSerializer):
@@ -16,8 +15,6 @@ class IPSerializer(serializers.ModelSerializer):
         """
         Validate IP number.
         """
-        try:
-            ip_validate(value)
-        except ValueError:
+        if not is_ip_valid(value):
             raise serializers.ValidationError("IP number should be valid")
         return value
