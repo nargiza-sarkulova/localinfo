@@ -1,24 +1,10 @@
 # -*- coding: utf-8 -*-
 import json
-import logging
 import requests
 
 from django.conf import settings
 
-
-logger = logging.getLogger(__name__)
-
-
-class BaseClient:
-    def _make_request(self, url):
-        logger.debug("Sending request to '%s'...", url)
-        response = requests.get(url)
-
-        if response.status_code != 200:
-            logger.error("Error retrieving data from API: status_code(%d)", response.status_code)
-            logger.debug(response.text)
-            return None
-        return response.json()
+from clients.base import BaseClient
 
 
 class IPstackAPIClient(BaseClient):
@@ -28,10 +14,10 @@ class IPstackAPIClient(BaseClient):
     """
 
     def __init__(self):
-        self.base_url = 'http://api.ipstack.com/{ip_number}?access_key={access_key}'
+        self.base_url = 'http://api.ipstack.com/{ip_number}?access_key={api_key}'
 
     def get_ip_info(self, ip_number):
-        url = self.base_url.format(ip_number=ip_number, access_key=settings.IPSTACK_ACCESS_KEY)
+        url = self.base_url.format(ip_number=ip_number, api_key=settings.IPSTACK_API_KEY)
         info = self._make_request(url)
         if info:
             return {
