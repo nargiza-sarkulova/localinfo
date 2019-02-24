@@ -4,5 +4,6 @@ djangorestframework==3.9.1
 django-redis==4.10.0
 requests==2.21.0
 IPy==0.83
+django-cors-headers==2.4.0
 mock==2.0.0
 mockredispy==2.9.3
