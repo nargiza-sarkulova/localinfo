@@ -13,7 +13,7 @@ class RootPage extends React.Component {
       }
 
     componentDidMount() {
-        fetch('http://52.35.232.141:8000/ips/')
+        fetch('http://api:8000/ips/')
         .then(response => response.json())
         .then(data =>
         {
