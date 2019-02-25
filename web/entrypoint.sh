@@ -1,4 +1,5 @@
 #!/bin/sh
 
 # By default start up apache in the foreground, override with /bin/bash for interative.
-exec /usr/sbin/apache2ctl -D FOREGROUND
+cd /var/www/html/localinfoweb && npm install
+exec npm run server
