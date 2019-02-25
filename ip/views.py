@@ -19,12 +19,12 @@ from clients.open_weather import OpenWeatherAPIClient
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
-class IPList(APIView):
+class BaseAPIView(APIView):
     """
-    List all saved IPs.
+    Base class for API views
     """
     def __init__(self, *args, **kwargs):
-        super(IPList, self).__init__(*args, **kwargs)
+        super(BaseAPIView, self).__init__(*args, **kwargs)
         self.ip_client = IPstackAPIClient()
         self.news_client = NewsAPIClient()
         self.weather_client = OpenWeatherAPIClient()
@@ -37,6 +37,11 @@ class IPList(APIView):
     def save_additional_data(self, ip_number, data):
         cache.set(ip_number, data, timeout=CACHE_TTL)
 
+
+class IPList(BaseAPIView):
+    """
+    List all saved IPs
+    """
     def get(self, request):
         ips = IP.objects.all()
         serializer = IPSerializer(ips, many=True)
@@ -57,9 +62,9 @@ class IPList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class IPDetail(APIView):
+class IPDetail(BaseAPIView):
     """
-    Retrieve a saved IP.
+    Retrieve a saved IP
     """
     def get_object(self, pk):
         try:
@@ -70,8 +75,11 @@ class IPDetail(APIView):
     def get(self, request, pk):
         ip = self.get_object(pk)
         serializer = IPSerializer(ip)
-        result = serializer.data
-        if ip.number in cache:
-            data = cache.get(ip.number)
-            result = {**serializer.data, **data}
-        return Response(result)
+        ip_info = serializer.data
+        if ip.number in cache:  # retrieve from cache if exists
+            additional_data = cache.get(ip.number)
+        else:
+            # fetch again and re-save if IP object exists but weather and news data has expired
+            additional_data = self.get_additional_data(ip_info)
+            self.save_additional_data(ip.number, additional_data)
+        return Response({**ip_info, **additional_data})
