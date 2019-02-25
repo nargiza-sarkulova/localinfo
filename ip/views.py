@@ -44,11 +44,10 @@ class BaseAPIView(APIView):
 
     def get_or_save_to_cache(self, ip_info):
         ip_number = ip_info['number']
-        if ip_number in cache:  # retrieve from cache if exists
-            additional_data = cache.get(ip_number)
+        if ip_number in cache:
+            additional_data = cache.get(ip_number)  # retrieve from cache if exists
         else:
-            # fetch again and re-save if IP object exists but weather and news data has expired
-            additional_data = self.get_and_save_to_cache(ip_info)
+            additional_data = self.get_and_save_to_cache(ip_info)  # fetch if doesn't exist
         return {**ip_info, **additional_data}
 
 
@@ -74,10 +73,9 @@ class IPList(BaseAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
         ip = self.get_object(ip_number)
         if ip:
-            # if IP object already exists serve data from cache
+            # if IP object already exists serve data from cache if possible
             ip_info = IPSerializer(ip).data
-            result = self.get_or_save_to_cache(ip_info)
-            return Response(result)
+            return Response(self.get_or_save_to_cache(ip_info))
         # if IP is new fetch data from external APIs and save to cache
         ip_info = self.ip_client.get_ip_info(ip_number)
         serializer = IPSerializer(data=ip_info)
@@ -99,7 +97,7 @@ class IPDetail(BaseAPIView):
             raise Http404
 
     def get(self, request, pk):
-        ip = self.get_object(pk)
-        serializer = IPSerializer(ip)
+        serializer = IPSerializer(self.get_object(pk))
+        # if IP object exists but weather and news data has expired re-fetch and save to cache
         result = self.get_or_save_to_cache(serializer.data)
         return Response(result)
