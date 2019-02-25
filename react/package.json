@@ -1,0 +1,39 @@
+{
+  "name": "Lixpi-lists-web-UI",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch-js": "watchify src/app.js -o public/scripts.js -t [babelify --presets [ @babel/preset-env @babel/preset-react ] --plugins [ babel-plugin-transform-class-properties ] ]",
+    "watch-scss": "node-sass -rw src/scss -o public",
+    "server": "cd public; live-server --port=80 --entry-file=index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lixpi/Lixpi-lists-web-UI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lixpi/Lixpi-lists-web-UI/issues"
+  },
+  "homepage": "https://github.com/Lixpi/Lixpi-lists-web-UI#readme",
+  "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babelify": "^10.0.0",
+    "node-sass": "^4.10.0",
+    "react-transition-group": "^2.5.0",
+    "watchify": "^3.11.0"
+  },
+  "dependencies": {
+    "live-server": "^1.2.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-router-dom": "^4.3.1"
+  }
+}
