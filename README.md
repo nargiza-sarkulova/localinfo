@@ -31,7 +31,20 @@ How to request info about IP:
             "pressure": 984,
             "temperature": 276.64,
             "wind_speed": 11.8
-        }
+        },
+        "news": [{
+            "author": "Amy Forliti",
+            "content": "Actor Terrence Howard, who plays the father of Jussie Smollett's character on \"Empire,\" has expressed support for his fellow cast member amid allegations that Smollett staged a racist, anti-gay attack on himself. Howard, who plays music mogul Lucious Lyon on … [+1876 chars]",
+            "description": "Actor Terrence Howard, who plays the father of Jussie Smollett's character on \"Empire,\" has expressed support for his fellow cast member amid allegations that Smollett staged a racist, anti-gay attack on himself.",
+            "publishedAt": "2019-02-24T21:55:00Z",
+            "source": {
+                "id": null,
+                "name": "Cp24.com"
+            },
+            "title": "'Empire' star Terrence Howard shows support for Jussie Smollett - CP24 Toronto's Breaking News",
+            "url": "https://www.cp24.com/entertainment-news/celebrity-news/empire-star-terrence-howard-shows-support-for-jussie-smollett-1.4310411",
+            "urlToImage": "https://www.cp24.com/polopoly_fs/1.4310415.1551038933!/httpImage/image.jpg_gen/derivatives/landscape_620/image.jpg"
+        }...]
     }
 
 View list of already saved IPs:
@@ -98,7 +111,20 @@ View complete info about location:
             "pressure": 984,
             "temperature": 276.64,
             "wind_speed": 11.8
-        }
+        },
+        "news": [{
+            "author": "Amy Forliti",
+            "content": "Actor Terrence Howard, who plays the father of Jussie Smollett's character on \"Empire,\" has expressed support for his fellow cast member amid allegations that Smollett staged a racist, anti-gay attack on himself. Howard, who plays music mogul Lucious Lyon on … [+1876 chars]",
+            "description": "Actor Terrence Howard, who plays the father of Jussie Smollett's character on \"Empire,\" has expressed support for his fellow cast member amid allegations that Smollett staged a racist, anti-gay attack on himself.",
+            "publishedAt": "2019-02-24T21:55:00Z",
+            "source": {
+                "id": null,
+                "name": "Cp24.com"
+            },
+            "title": "'Empire' star Terrence Howard shows support for Jussie Smollett - CP24 Toronto's Breaking News",
+            "url": "https://www.cp24.com/entertainment-news/celebrity-news/empire-star-terrence-howard-shows-support-for-jussie-smollett-1.4310411",
+            "urlToImage": "https://www.cp24.com/polopoly_fs/1.4310415.1551038933!/httpImage/image.jpg_gen/derivatives/landscape_620/image.jpg"
+        }...]
     }
 
 
