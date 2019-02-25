@@ -7,7 +7,6 @@ import RootPage from './components/RootPage'
 import Details from './components/Details'
 import NotFound from './components/NotFound'
 
-
 const currentKey = location.pathname.split('/')[1] || '/'
 const timeout = { enter: 200, exit: 1000 }
 
@@ -24,7 +23,8 @@ function run() {
                 <CSSTransition key={location.key} timeout={timeout}  classNames="route">
                     <Switch location={location}>
                         <Route exact path="/" component={RootPage} />
-                        <Route path="/details/:ip" component={Details} />
+                        <Route path="/details/" component={Details} />
+                        <Route path="/details/:id" component={Details} />
                         <Route component={NotFound} />
                     </Switch>
                 </CSSTransition>

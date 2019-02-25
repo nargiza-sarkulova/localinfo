@@ -3151,15 +3151,23 @@ html, body {
     width: 100%;
     height: 100%; }
 
+a {
+  text-decoration: none; }
+
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Raleway', sans-serif; }
+  font-family: 'Raleway', sans-serif;
+  font-weight: 700; }
+
+h1 {
+  font-size: 2em; }
+
+h2 {
+  font-size: 1.5em; }
 
 #root {
+  padding: 20px;
   width: 100%;
   height: 100%; }
-
-.container {
-  max-width: none !important; }
 
 .full-height {
   height: 100%; }
@@ -3178,4 +3186,21 @@ h1, h2, h3, h4, h5, h6 {
       width: 15px;
       height: auto; }
   .ipRow b {
+    font-weight: 700; }
+
+.newsRow {
+  border-bottom: 2px solid #e56df2;
+  margin-bottom: 20px;
+  padding-bottom: 20px; }
+  .newsRow:last-of-type {
+    border: none; }
+  .newsRow p {
+    font-size: 15px;
+    line-height: 1.3; }
+    .newsRow p img {
+      margin: 5px 0;
+      width: 100%;
+      height: auto;
+      max-width: 200px; }
+  .newsRow b {
     font-weight: 700; }

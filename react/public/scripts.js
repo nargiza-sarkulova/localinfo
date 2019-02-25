@@ -27486,7 +27486,10 @@ function run() {
         path: "/",
         component: _RootPage.default
       }), _react.default.createElement(_reactRouterDom.Route, {
-        path: "/details/:ip",
+        path: "/details/",
+        component: _Details.default
+      }), _react.default.createElement(_reactRouterDom.Route, {
+        path: "/details/:id",
         component: _Details.default
       }), _react.default.createElement(_reactRouterDom.Route, {
         component: _NotFound.default
@@ -27497,7 +27500,7 @@ function run() {
 
 run();
 
-},{"./components/Details":74,"./components/NotFound":76,"./components/RootPage":77,"react":63,"react-dom":27,"react-router-dom":41,"react-transition-group":58}],74:[function(require,module,exports){
+},{"./components/Details":74,"./components/NotFound":77,"./components/RootPage":78,"react":63,"react-dom":27,"react-router-dom":41,"react-transition-group":58}],74:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27507,9 +27510,15 @@ exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
+var _News = _interopRequireDefault(require("./News"));
+
+var _Weather = _interopRequireDefault(require("./Weather"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -27532,33 +27541,87 @@ var Details =
 function (_React$Component) {
   _inherits(Details, _React$Component);
 
-  function Details() {
-    var _getPrototypeOf2;
-
-    var _temp, _this;
+  function Details(props) {
+    var _this;
 
     _classCallCheck(this, Details);
 
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Details).call(this, props));
+    _this.state = {
+      currentIpInfo: {
+        news: []
+      }
+    };
 
-    return _possibleConstructorReturn(_this, (_temp = _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Details)).call.apply(_getPrototypeOf2, [this].concat(args))), _this.fetchIpInfo = function (event) {
-      event.preventDefault(); // const storeName = this.storeName.current.value;
-      // this.props.history.push(`/store/${storeName}`);
+    _this.init();
 
-      console.log('event');
-      console.log(event);
-
-      _this.props.history.push("/details/1");
-    }, _temp));
+    return _this;
   }
 
   _createClass(Details, [{
+    key: "init",
+    value: function init() {
+      var _this2 = this;
+
+      var fetchingExistingRecord = this.props.location.pathname.match(/\d+$/);
+
+      if (fetchingExistingRecord) {
+        var number = fetchingExistingRecord[0];
+        var obj = this.props.location.state.data.find(function (obj) {
+          return obj.id == number;
+        });
+        this.state.currentIpInfo = obj;
+      } else {
+        var ipAddress = this.props.location.search.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/)[0];
+        fetch('http://52.35.232.141:8000/ips/', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            number: ipAddress
+          })
+        }).then(function (response) {
+          return response.json();
+        }).then(function (data) {
+          return _this2.setState({
+            currentIpInfo: data
+          });
+        });
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
-      console.log(this.props);
-      return _react.default.createElement("h2", null, "Details");
+      return _react.default.createElement("div", {
+        className: "container full-height",
+        id: "ips-page-container"
+      }, _react.default.createElement("div", {
+        className: "row full-height ",
+        id: "ips-form-container"
+      }, _react.default.createElement("div", {
+        className: "ipRow d-flex flex-column"
+      }, _react.default.createElement("h2", {
+        className: "mt-2 mb-3"
+      }, _react.default.createElement("a", {
+        href: "/"
+      }, "\u2190 Go home")), _react.default.createElement("h1", {
+        className: "mt-2 mb-3"
+      }, "IP details: "), _react.default.createElement("p", null, _react.default.createElement("b", null, "IP:"), " ", this.state.currentIpInfo.number), _react.default.createElement("p", null, _react.default.createElement("b", null, "Country:"), " ", this.state.currentIpInfo.country_name, " ", _react.default.createElement("img", {
+        src: this.state.currentIpInfo.country_flag,
+        alt: ""
+      }), " "), _react.default.createElement("p", null, _react.default.createElement("b", null, "City:"), " ", this.state.currentIpInfo.city), _react.default.createElement("p", null, _react.default.createElement("b", null, "Region:"), " ", this.state.currentIpInfo.region_name), _react.default.createElement("p", null, _react.default.createElement("b", null, "Latitude:"), " ", this.state.currentIpInfo.latitude), _react.default.createElement("p", null, _react.default.createElement("b", null, "Longitude:"), " ", this.state.currentIpInfo.latitude), _react.default.createElement("h1", {
+        className: "mt-4 mb-2"
+      }, "Weather: "), _react.default.createElement(_Weather.default, this.state.currentIpInfo.weather), _react.default.createElement("h1", {
+        className: "mt-4 mb-2"
+      }, "News block: "), _react.default.createElement("div", {
+        className: ""
+      }, this.state.currentIpInfo.news.map(function (news) {
+        return _react.default.createElement(_News.default, _extends({
+          key: news.id
+        }, news));
+      })))));
     }
   }]);
 
@@ -27568,7 +27631,7 @@ function (_React$Component) {
 var _default = Details;
 exports.default = _default;
 
-},{"react":63}],75:[function(require,module,exports){
+},{"./News":76,"./Weather":79,"react":63}],75:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27581,11 +27644,11 @@ var _react = _interopRequireDefault(require("react"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var LocationCard = function LocationCard(props) {
-  console.log('props');
-  console.log(props);
   return _react.default.createElement("div", {
     className: "ipRow"
-  }, _react.default.createElement("p", null, _react.default.createElement("b", null, "IP:"), " ", props.number), _react.default.createElement("p", null, _react.default.createElement("b", null, "Country:"), " ", props.country_name, " ", _react.default.createElement("img", {
+  }, _react.default.createElement("p", null, _react.default.createElement("b", null, "IP:"), " ", _react.default.createElement("a", {
+    href: "/details/?ip=".concat(props.number)
+  }, props.number), " "), _react.default.createElement("p", null, _react.default.createElement("b", null, "Country:"), " ", props.country_name, " ", _react.default.createElement("img", {
     src: props.country_flag,
     alt: ""
   }), " "), _react.default.createElement("p", null, _react.default.createElement("b", null, "City:"), " ", props.city), _react.default.createElement("p", null, _react.default.createElement("b", null, "Region:"), " ", props.region_name), _react.default.createElement("p", null, _react.default.createElement("b", null, "Latitude:"), " ", props.latitude), _react.default.createElement("p", null, _react.default.createElement("b", null, "Longitude:"), " ", props.longitude));
@@ -27595,6 +27658,32 @@ var _default = LocationCard;
 exports.default = _default;
 
 },{"react":63}],76:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var News = function News(props) {
+  return _react.default.createElement("div", {
+    className: "newsRow"
+  }, _react.default.createElement("p", null, _react.default.createElement("b", null, "Source:"), " ", props.source.name), _react.default.createElement("p", null, _react.default.createElement("b", null, "Title:"), " ", _react.default.createElement("a", {
+    href: props.url
+  }, " ", props.title)), _react.default.createElement("p", null, _react.default.createElement("b", null, "Description:"), " ", props.description), _react.default.createElement("p", null, _react.default.createElement("b", null, "content:"), " ", props.content), _react.default.createElement("p", null, _react.default.createElement("img", {
+    src: props.urlToImage,
+    alt: ""
+  })));
+};
+
+var _default = News;
+exports.default = _default;
+
+},{"react":63}],77:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27618,7 +27707,7 @@ var NotFound = function NotFound() {
 var _default = NotFound;
 exports.default = _default;
 
-},{"react":63,"react-transition-group":58}],77:[function(require,module,exports){
+},{"react":63,"react-transition-group":58}],78:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27669,10 +27758,14 @@ function (_React$Component) {
 
     _this.fetchIpInfo = function (event) {
       event.preventDefault();
-      console.log('event');
-      console.log(event);
 
-      _this.props.history.push("/details/1");
+      _this.props.history.push({
+        pathname: '/details/',
+        search: "?ip=".concat(event.target[0].value),
+        state: {
+          data: _this.state.data
+        }
+      });
     };
 
     _this.state = {
@@ -27693,8 +27786,7 @@ function (_React$Component) {
           data: data
         });
       });
-    } //Specifying required props format
-
+    }
   }, {
     key: "render",
     value: function render() {
@@ -27705,14 +27797,14 @@ function (_React$Component) {
         className: "row full-height ",
         id: "ips-form-container"
       }, _react.default.createElement("form", {
-        className: "store-selector  d-flex flex-column",
+        className: "d-flex flex-column",
         onSubmit: this.fetchIpInfo
       }, _react.default.createElement("h2", null, "Let's dig this ip?"), _react.default.createElement("input", {
         type: "text",
         required: true,
-        placeholder: "Username",
-        defaultValue: "192.168.0.1",
-        ref: this.loginName
+        placeholder: "Ip address",
+        defaultValue: "",
+        ref: this.ipAddress
       }), _react.default.createElement("div", {
         className: " d-flex justify-content-end button-container"
       }, _react.default.createElement("button", {
@@ -27732,9 +27824,30 @@ function (_React$Component) {
 }(_react.default.Component);
 
 RootPage.propTypes = {
-  loginName: _propTypes.default.string
+  ipAddress: _propTypes.default.string
 };
 var _default = RootPage;
 exports.default = _default;
 
-},{"./LocationCard":75,"prop-types":23,"react":63}]},{},[73]);
+},{"./LocationCard":75,"prop-types":23,"react":63}],79:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Weather = function Weather(props) {
+  return _react.default.createElement("div", {
+    className: "weatherRow"
+  }, _react.default.createElement("p", null, _react.default.createElement("b", null, "Description:"), " ", props.description), _react.default.createElement("p", null, _react.default.createElement("b", null, "Temperature:"), " ", props.temperature, " "), _react.default.createElement("p", null, _react.default.createElement("b", null, "Pressure:"), " ", props.pressure), _react.default.createElement("p", null, _react.default.createElement("b", null, "Humidity:"), " ", props.humidity), _react.default.createElement("p", null, _react.default.createElement("b", null, "Wind_speed:"), " ", props.wind_speed));
+};
+
+var _default = Weather;
+exports.default = _default;
+
+},{"react":63}]},{},[73]);
