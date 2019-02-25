@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
-import requests
-
 from django.conf import settings
 
 from clients.base import BaseClient
