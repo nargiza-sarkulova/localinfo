@@ -1,6 +1,8 @@
 # localinfo
 Get local weather and news based on your IP
 
+DEMO - http://52.35.232.141/
+
 ### List of things to improve in future ###
 
 - Use production server instead of Django development server
@@ -13,6 +15,7 @@ Get local weather and news based on your IP
 - More tests (had problem with mocking Redis)
 - Spent some time trying to find an open API to fetch news by location but couldn't. NewsAPI that I'm using now only allows search by country code.
 - Spent a lot of time on react.js as I've barely used it before but never from scratch. It's probably very immature code but wanted to try something fancier than plain HTML/JQuery/CSS.
+- Handle errors on frontend (backend sends errors correctly)
 
 ### How to make requests to backend using httpie ###
 
