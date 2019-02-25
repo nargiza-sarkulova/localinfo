@@ -1,6 +1,19 @@
 # localinfo
 Get local weather and news based on your IP
 
+### List of things to improve in future ###
+
+- Use production server instead of Django development server
+- Restrict number of requests per minute to avoid bot attacks
+- Implement pagination both for frontend and DB queries
+- Handle external APIs timeouts and retries
+- Better handle of data errors from external APIs (use custom exceptions)
+- Tested only on IPv4 numbers, add support for IPv6
+- Right now it checks that IP is valid but ideally should allow only public IPs
+- More tests (had problem with mocking Redis)
+- Spent some time trying to find an open API to fetch news by location but couldn't. NewsAPI that I'm using now only allows search by country code.
+- Spent a lot of time on react.js as I've barely used it before but never from scratch. It's probably very immature code but wanted to try something fancier than plain HTML/JQuery/CSS.
+
 ### How to make requests to backend using httpie ###
 
 How to request info about IP:
@@ -126,15 +139,3 @@ View complete info about location:
             "urlToImage": "https://www.cp24.com/polopoly_fs/1.4310415.1551038933!/httpImage/image.jpg_gen/derivatives/landscape_620/image.jpg"
         }...]
     }
-
-
-### List of things to improve in future ###
-
-- Use production server instead of Django development server
-- Restrict number of requests per minute to avoid bot attacks
-- Implement pagination both for frontend and DB queries
-- Handle external APIs timeouts and retries
-- Better handle of data errors from external APIs (use custom exceptions)
-- Tested only on IPv4 numbers, add support for IPv6
-- Right now it checks that IP is valid but ideally should allow only public IPs
-- More tests (had problem with mocking Redis)
